@@ -1,0 +1,19 @@
+Idea 1 (Sistema de acceso con identificación por radio frecuencia con arduino)
+
+Esta idea de proyecto consiste en un sistema de acceso mediante identificación por radiofrecuencia (RFID), 
+que integra un lector RFID y una pantalla LCD. El lector RFID se encargará de leer las tarjetas de acceso, 
+mientras que la pantalla LCD mostrará información relevante, como el estado del acceso y mensajes de error. 
+Estos componentes se integrarán para permitir que el sistema controle la cerradura de una puerta, 
+garantizando que solo los usuarios autorizados puedan entrar. Además, se incluirá una función para la gestión 
+de nuevos usuarios, facilitando la inclusión de tarjetas adicionales en el sistema y optimizando así la seguridad 
+y el control de acceso a las instalaciones.
+
+Componente	Cantidad 
+
+Arduino Uno = 1
+Buzzer = 1
+Resistencia de 1 KΩ = 3
+Lector RFID RC522 = 1
+Servomotor = 1
+Display I2C = 1
+Pulsador = 3
