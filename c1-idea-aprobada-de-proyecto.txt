@@ -17,3 +17,5 @@ Lector RFID RC522 = 1
 Servomotor = 1
 Display I2C = 1
 Pulsador = 3
+
+ademas hay que agregar la opción de habilitar o deshabilitar las tarjetas
