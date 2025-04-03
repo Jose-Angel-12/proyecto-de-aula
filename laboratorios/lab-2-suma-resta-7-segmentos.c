@@ -1,7 +1,3 @@
-/*
-    Simulacion en Wokwi:
-    https://wokwi.com/projects/426613926979823617
-*/
 
 #include <stdio.h>
 #include "freertos/FreeRTOS.h"
@@ -16,7 +12,7 @@
 #define SF 33
 #define SG 32
 #define SP 14
-#define WAIT 100
+#define WAIT 10
 #define LSB 13
 #define MSB 12
 #define SUM 16
@@ -111,7 +107,7 @@ void app_main()
                 {
                     printf("PUSH SUM: %d\n", gpio_get_level(SUM));
                     num++;
-                    vTaskDelay(50 / portTICK_PERIOD_MS);
+                    vTaskDelay(300 / portTICK_PERIOD_MS);
                     mostrarDigito(unidad, decena);
                 }
 
@@ -119,7 +115,7 @@ void app_main()
                 {
                     printf("PUSH RES: %d\n", gpio_get_level(RES));
                     num--;
-                    vTaskDelay(50 / portTICK_PERIOD_MS);
+                    vTaskDelay(300 / portTICK_PERIOD_MS);
                     mostrarDigito(unidad, decena);
                 }
                 mostrarDigito(unidad, decena);
