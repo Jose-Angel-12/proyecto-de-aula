@@ -4,7 +4,6 @@ https://wokwi.com/projects/426613926979823617
 
 */
 
-
 #include <stdio.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -96,40 +95,32 @@ void mostrarDigito(int unidad, int decena)
 
 void app_main()
 {
-    setup(); // Configurar salidas
+    setup(); // Inicializar configuración de pines
+
+    int num = 0;
 
     while (1)
     {
-        int num = 0;
-        // Recorrer los valores del 1 al 100 en hexadecimal
-        while (num < 100)
+        // Obtener unidad y decena
+        int unidad = num % 10;
+        int decena = num / 10;
+
+        // Manejo de botones
+        if (gpio_get_level(SUM))
         {
-            if (num >= 0)
-            {
-                int unidad = num % 10; // Obtener el dígito menos significativo
-                int decena = num / 10; // Obtener el dígito más significativo
-
-                if (gpio_get_level(SUM) == 1)
-                {
-                    printf("PUSH SUM: %d\n", gpio_get_level(SUM));
-                    num++;
-                    vTaskDelay(300 / portTICK_PERIOD_MS);
-                    mostrarDigito(unidad, decena);
-                }
-
-                if (gpio_get_level(RES) == 1)
-                {
-                    printf("PUSH RES: %d\n", gpio_get_level(RES));
-                    num--;
-                    vTaskDelay(300 / portTICK_PERIOD_MS);
-                    mostrarDigito(unidad, decena);
-                }
-                mostrarDigito(unidad, decena);
-            }
-            else
-            {
-                num = 0;
-            }
+            printf("PUSH SUM: %d\n", gpio_get_level(SUM));
+            num = (num < 99) ? num + 1 : 0;
+            vTaskDelay(200 / portTICK_PERIOD_MS);
         }
+
+        if (gpio_get_level(RES))
+        {
+            printf("PUSH RES: %d\n", gpio_get_level(RES));
+            num = (num > 0) ? num - 1 : 0;
+            vTaskDelay(200 / portTICK_PERIOD_MS);
+        }
+
+        // Mostrar número en display
+        mostrarDigito(unidad, decena);
     }
 }
