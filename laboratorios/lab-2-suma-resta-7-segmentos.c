@@ -1,3 +1,9 @@
+/*
+simulación WOKWI:
+https://wokwi.com/projects/426613926979823617
+
+*/
+
 
 #include <stdio.h>
 #include "freertos/FreeRTOS.h"
