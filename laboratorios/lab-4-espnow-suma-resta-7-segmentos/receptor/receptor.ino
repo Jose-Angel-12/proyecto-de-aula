@@ -1,85 +1,100 @@
-/*
-  Objetivo:
-  Configurar receptor del ESPNOW
+#include <esp_now.h>
+#include <WiFi.h>
 
-  Requisitos:
-  Se debe saber la MAC del receptor.
-*/
+// Pines para los segmentos
+#define SA 5
+#define SB 4
+#define SC 19
+#define SD 25
+#define SE 26
+#define SF 33
+#define SG 32
+#define SP 14
 
-#define BAUD_RATE 115200
+#define LSB 13
+#define MSB 12
+#define WAIT 5
 
-///////////////////////////////////////////////// Declarar librerías
+int segPins[] = {SA, SB, SC, SD, SE, SF, SG, SP};
 
-#include <esp_now.h>  // Para comunicación peer-to-peer ESP-NOW
-#include <WiFi.h>     // Para funcionalidades WiFi del ESP32
+// Segmentos para mostrar 0-F y todo apagado (16)
+uint8_t segCode[17][8] = {
+  {0, 0, 0, 0, 0, 0, 1, 1}, // 0
+  {1, 0, 0, 1, 1, 1, 1, 1}, // 1
+  {0, 0, 1, 0, 0, 1, 0, 1}, // 2
+  {0, 0, 0, 0, 1, 1, 0, 1}, // 3
+  {1, 0, 0, 1, 1, 0, 0, 1}, // 4
+  {0, 1, 0, 0, 1, 0, 0, 1}, // 5
+  {0, 1, 0, 0, 0, 0, 0, 1}, // 6
+  {0, 0, 0, 1, 1, 1, 1, 1}, // 7
+  {0, 0, 0, 0, 0, 0, 0, 1}, // 8
+  {0, 0, 0, 0, 1, 0, 0, 1}, // 9
+  {0, 0, 0, 1, 0, 0, 0, 1}, // A
+  {1, 1, 0, 0, 0, 0, 0, 1}, // B
+  {0, 1, 1, 0, 0, 0, 1, 1}, // C
+  {1, 0, 0, 0, 0, 1, 0, 1}, // D
+  {0, 1, 1, 0, 0, 0, 0, 1}, // E
+  {0, 1, 1, 1, 0, 0, 0, 1}, // F
+  {1, 1, 1, 1, 1, 1, 1, 1}, // Apagado
+};
 
-///////////////////////////////////////////////// Definir variables
-
-// Estructura para enviar recibir datos
-//
-// DEBE SER IGUAL que la estructura en el emisor
 typedef struct struct_message {
-    char a[32];   // Campo para cadena de texto (hasta 32 caracteres)
-    int b;        // Campo para valor entero
-    float c;      // Campo para valor flotante
-    bool d;       // Campo para valor booleano
+  int valor;
 } struct_message;
 
-// Variable global para almacenar los datos recibidos
-struct_message myData;
+struct_message incomingData;
+int valorRecibido = 0;
 
-///////////////////////////////////////////////// Funciones auxiliares
-
-// Función de callback que se ejecuta cuando se reciben datos
-void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len)
-{
-  // Copiar los datos recibidos a nuestra estructura
-  memcpy(&myData, incomingData, sizeof(myData));
-
-  // Imprimir información de la recepción
-  Serial.print("Bytes recibidos: ");
-  Serial.println(len);
-
-  // Imprimir cada campo de los datos recibidos
-
-  Serial.print("Texto: ");
-  Serial.println(myData.a);
-
-  Serial.print("Entero: ");
-  Serial.println(myData.b);
-
-  Serial.print("Flotante: ");
-  Serial.println(myData.c);
-
-  Serial.print("Booleano: ");
-  Serial.println(myData.d ? "true" : "false");
-
-  // Salto de línea
-  Serial.println();
+void mostrar(int digit) {
+  for (int i = 0; i < 8; i++) {
+    digitalWrite(segPins[i], segCode[digit][i]);
+  }
 }
 
-///////////////////////////////////////////////// Función setup y loop
+void mostrarDigito(int unidad, int decena) {
+  mostrar(16);  // Apagar primero
+  digitalWrite(LSB, HIGH);
+  digitalWrite(MSB, LOW);
+  mostrar(unidad);
+  delay(WAIT);
 
-void setup()
-{
-  // Inicializar el puerto serial para monitoreo
+  mostrar(16);
+  digitalWrite(LSB, LOW);
+  digitalWrite(MSB, HIGH);
+  mostrar(decena);
+  delay(WAIT);
+}
+
+// ✅ NUEVA FIRMA para la función callback compatible con el nuevo ESP-NOW
+void onDataRecv(const esp_now_recv_info_t *info, const uint8_t *data, int len) {
+  memcpy(&incomingData, data, sizeof(incomingData));
+  valorRecibido = incomingData.valor;
+  Serial.print("Dato recibido: ");
+  Serial.println(valorRecibido);
+}
+
+void setup() {
   Serial.begin(115200);
-
-  // Configurar el dispositivo como estación WiFi
   WiFi.mode(WIFI_STA);
 
-  // Inicializar el protocolo ESP-NOW
-  if (esp_now_init() != ESP_OK)
-  {
-    Serial.println("Error al inicializar ESP-NOW");
-    return; // Detener ejecución si hay error
+  for (int i = 0; i < 8; i++) {
+    pinMode(segPins[i], OUTPUT);
+    digitalWrite(segPins[i], HIGH); // Todo apagado
   }
 
-  // Registrar la función de callback para manejar datos recibidos
-  esp_now_register_recv_cb(esp_now_recv_cb_t(OnDataRecv));
+  pinMode(LSB, OUTPUT);
+  pinMode(MSB, OUTPUT);
+
+  if (esp_now_init() != ESP_OK) {
+    Serial.println("Error al iniciar ESP-NOW");
+    return;
+  }
+
+  esp_now_register_recv_cb(onDataRecv);
 }
 
-void loop()
-{
-  // No es necesario código aquí, todo se maneja por callbacks cuando se reciben datos
+void loop() {
+  int unidad = valorRecibido % 10;
+  int decena = valorRecibido / 10;
+  mostrarDigito(unidad, decena);
 }

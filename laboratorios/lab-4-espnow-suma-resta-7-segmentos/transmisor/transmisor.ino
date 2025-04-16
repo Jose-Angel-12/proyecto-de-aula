@@ -1,104 +1,78 @@
-/*
-  Objetivo:
-  Configurar emisor del ESPNOW
+#include <esp_now.h>
+#include <WiFi.h>
 
-  Requisitos:
-  Se debe saber la MAC del receptor.
-*/
+#define BUTTON_SUM 34
+#define BUTTON_RES 32
+#define BUTTON_MID 35
 
-#define BAUD_RATE 115200
+uint8_t broadcastAddress[] = { 0xF8, 0xB3, 0xB7, 0x2C, 0x6E, 0xA8 };
 
-///////////////////////////////////////////////// Declarar librerías
-
-#include <esp_now.h>  // Librería para comunicación ESP-NOW
-#include <WiFi.h>     // Librería WiFi para ESP32
-
-///////////////////////////////////////////////// Definir variables
-
-// Dirección MAC del receptor
-// Se debe reemplazar con la dirección MAC del receptor
-// Ejemplo:
-// Si la dirección del receptor es 08:d1:f9:de:03:48, entonces queda
-// uint8_t broadcastAddress[] = {0x08, 0xD1, 0xF9, 0xDE, 0x03, 0x48};
-//
-uint8_t broadcastAddress[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
-
-// Estructura para enviar datos
-//
-// DEBE SER IGUAL que la estructura en el receptor
 typedef struct struct_message {
-  char a[32];   // Campo para texto (hasta 32 caracteres)
-  int b;        // Campo para valores enteros
-  float c;      // Campo para valores decimales
-  bool d;       // Campo para valores booleanos
+  int valor;
 } struct_message;
 
-// Variable para almacenar los datos a enviar
 struct_message myData;
-
-// Variable para almacenar información del dispositivo receptor
 esp_now_peer_info_t peerInfo;
 
-///////////////////////////////////////////////// Funciones auxiliares
+int contador = 0;
 
-// Función de callback que se ejecuta al enviar datos
-void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status)
-{
-  Serial.print("\r\nEstado del último envío:\t");
-  Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Entrega exitosa" : "Fallo en entrega");
+void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
+  Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Enviado" : "Fallo");
 }
 
-///////////////////////////////////////////////// Función setup y loop
-
-void setup()
-{
-  // Inicializar el monitor serial a 115200 baudios
-  Serial.begin(BAUD_RATE);
-
-  // Configurar el dispositivo como estación WiFi
+void setup() {
+  Serial.begin(115200);
   WiFi.mode(WIFI_STA);
 
-  // Inicializar ESP-NOW
-  if (esp_now_init() != ESP_OK)
-  {
-    Serial.println("Error al inicializar ESP-NOW");
+  pinMode(BUTTON_SUM, INPUT_PULLUP);
+  pinMode(BUTTON_RES, INPUT_PULLUP);
+  pinMode(BUTTON_MID, INPUT_PULLUP);
+
+  if (esp_now_init() != ESP_OK) {
+    Serial.println("Error al iniciar ESP-NOW");
     return;
   }
 
-  // Registrar la función de callback para conocer el estado del envío
   esp_now_register_send_cb(OnDataSent);
 
-  // Configurar información del dispositivo receptor
-  memcpy(peerInfo.peer_addr, broadcastAddress, 6);  // Copiar dirección MAC
-  peerInfo.channel = 0;                             // Usar canal 0
-  peerInfo.encrypt = false;                         // Sin encriptación
+  memcpy(peerInfo.peer_addr, broadcastAddress, 6);
+  peerInfo.channel = 0;
+  peerInfo.encrypt = false;
 
-  // Añadir el dispositivo receptor a la lista de pares
-  if (esp_now_add_peer(&peerInfo) != ESP_OK)
-  {
-    Serial.println("Error al añadir el receptor");
+  if (esp_now_add_peer(&peerInfo) != ESP_OK) {
+    Serial.println("Error al añadir peer");
     return;
   }
+
+  // Enviar valor inicial 0
+  myData.valor = contador;
+  esp_now_send(broadcastAddress, (uint8_t *)&myData, sizeof(myData));
 }
 
-void loop()
-{
-  // Asignar valores a los campos de datos
-  strcpy(myData.a, "THIS IS A CHAR");  // Texto fijo
-  myData.b = random(1,20);             // Entero aleatorio entre 1 y 20
-  myData.c = 1.2;                      // Valor decimal fijo
-  myData.d = false;                    // Valor booleano fijo
+void loop() {
+  bool botonPresionado = false;
 
-  // Enviar los datos via ESP-NOW
-  esp_err_t result = esp_now_send(broadcastAddress, (uint8_t *) &myData, sizeof(myData));
+  if (digitalRead(BUTTON_SUM) == LOW) {
+    contador = min(99, contador + 1);
+    botonPresionado = true;
+    Serial.println("Botón SUMA");
+  }
 
-  if (result == ESP_OK)
-  {
-    Serial.println("Datos enviados con éxito");
+  if (digitalRead(BUTTON_RES) == LOW) {
+    contador = max(0, contador - 1);
+    botonPresionado = true;
+    Serial.println("Botón RESTA");
   }
-  else
-  {
-    Serial.println("Error al enviar los datos");
+
+  if (digitalRead(BUTTON_MID) == LOW) {
+    contador = 50;
+    botonPresionado = true;
+    Serial.println("Botón MITAD");
   }
-  delay(2000);  // Esperar 2 segundos entre envíos
+
+  if (botonPresionado) {
+    myData.valor = contador;
+    esp_now_send(broadcastAddress, (uint8_t *)&myData, sizeof(myData));
+    delay(300);  // Antirrebote
+  }
 }
