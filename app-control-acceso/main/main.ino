@@ -1,104 +1,87 @@
-#include <Wire.h>                     
-#include <LiquidCrystal_I2C.h>       
-#include <SPI.h>                     
-#include <MFRC522.h>                 
-#include <ESP32Servo.h>             
-#include <WiFi.h>                    
-#include <WebServer.h>              
+#include <Wire.h>                     // Comunicación I2C
+#include <LiquidCrystal_I2C.h>       // Librería para manejar pantalla LCD I2C
+#include <SPI.h>                     // Comunicación SPI para el lector RFID
+#include <MFRC522.h>                 // Librería del módulo RFID RC522
+#include <ESP32Servo.h>              // Librería para controlar servos en ESP32
+#include <WiFi.h>                    // Librería para red WiFi
+#include <WebServer.h>               // Servidor web local
 
-// --- LCD ---
-LiquidCrystal_I2C lcd(0x27, 16, 2);
+// --- LCD I2C ---
+LiquidCrystal_I2C lcd(0x27, 16, 2);  // Dirección I2C 0x27, LCD de 16 columnas x 2 filas
 
-// --- Pines RFID ---
-#define SS_PIN 5     
-#define RST_PIN 4    
-MFRC522 rfid(SS_PIN, RST_PIN);
+// --- Pines del lector RFID ---
+#define SS_PIN 5
+#define RST_PIN 4
+MFRC522 rfid(SS_PIN, RST_PIN);       // Crear objeto del lector RFID
 
 // --- Servo ---
 Servo servo;
 #define SERVO_PIN 13
-#define OPEN_POS 90   // Posición abierta
-#define CLOSE_POS 0   // Posición cerrada
+#define OPEN_POS 90                   // Posición del servo para abrir
+#define CLOSE_POS 0                   // Posición del servo para cerrar
 
-// --- WiFi ---
+// --- Configuración WiFi ---
 const char* ssid = "ESP32_AP";
 const char* password = "12345678";
-WebServer server(80);
+WebServer server(80);                // Crear servidor web en el puerto 80
 
-// --- Lista de UID permitidos ---
-#define MAX_UIDS 10
+// --- Lista de UIDs autorizados ---
+#define MAX_UIDS 20
 String allowedUIDs[MAX_UIDS];
 int uidCount = 0;
+String lastUID = "";
 
-// --- Funciones Web ---
-void handleRoot() {
-  String html = "<html><body><h1>Control de Acceso</h1>";
-  html += "<form action='/add' method='get'>Agregar UID: <input name='uid'><input type='submit'></form>";
-  html += "<h3>UIDs Autorizados:</h3><ul>";
-  for (int i = 0; i < uidCount; i++) {
-    html += "<li>" + allowedUIDs[i] + "</li>";
-  }
-  html += "</ul></body></html>";
-  server.send(200, "text/html", html);
-}
-
-void handleAdd() {
-  if (server.hasArg("uid")) {
-    String newUID = server.arg("uid").c_str();
-    newUID.toUpperCase();
-    if (uidCount < MAX_UIDS) {
-      allowedUIDs[uidCount++] = newUID;
-      Serial.println("UID agregado: " + newUID);
-    }
-  }
-  server.sendHeader("Location", "/");
-  server.send(303);
-}
-
-// --- Setup ---
 void setup() {
   Serial.begin(115200);
 
+  // --- LCD ---
   lcd.init();
   lcd.backlight();
   lcd.setCursor(0, 0);
-  lcd.print("Inicializando...");
+  lcd.print("RFID + LCD + Web");
+  delay(2000);
+  lcd.clear();
+  lcd.print("Acerca tu TAG");
 
+  // --- RFID ---
   SPI.begin();
   rfid.PCD_Init();
 
+  // --- Servo ---
   servo.attach(SERVO_PIN);
   servo.write(CLOSE_POS);
 
-  // --- Iniciar WiFi como AP ---
+  // --- WiFi Access Point ---
   WiFi.softAP(ssid, password);
-  Serial.println("AP Iniciado. IP:");
+  Serial.println("[WiFi] AP creado");
+  Serial.print("IP local: ");
   Serial.println(WiFi.softAPIP());
 
+  // --- Rutas del servidor web ---
   server.on("/", handleRoot);
   server.on("/add", handleAdd);
   server.begin();
-
-  lcd.clear();
-  lcd.print("Acerca tu TAG");
+  Serial.println("[WebServer] Servidor iniciado");
 }
 
-// --- Loop ---
 void loop() {
-  server.handleClient();
+  server.handleClient();  // Gestionar peticiones web
 
+  // Verificar si se presenta una nueva tarjeta RFID
   if (!rfid.PICC_IsNewCardPresent() || !rfid.PICC_ReadCardSerial()) {
     return;
   }
 
+  // Obtener el UID de la tarjeta
   String uidStr = "";
   for (byte i = 0; i < rfid.uid.size; i++) {
     if (rfid.uid.uidByte[i] < 0x10) uidStr += "0";
     uidStr += String(rfid.uid.uidByte[i], HEX);
   }
   uidStr.toUpperCase();
+  lastUID = uidStr;
 
-  Serial.print("UID Detectado: ");
+  Serial.print("[RFID] UID detectado: ");
   Serial.println(uidStr);
 
   bool accessGranted = false;
@@ -114,7 +97,7 @@ void loop() {
     lcd.setCursor(0, 0);
     lcd.print("Acceso Permitido");
     lcd.setCursor(0, 1);
-    lcd.print("Cerradura abierta");
+    lcd.print("Abriendo cerradura");
     servo.write(OPEN_POS);
     delay(3000);
     servo.write(CLOSE_POS);
@@ -128,6 +111,33 @@ void loop() {
   delay(3000);
   lcd.clear();
   lcd.print("Acerca tu TAG");
+  rfid.PICC_HaltA();  // Detener comunicación con la tarjeta
+}
 
-  rfid.PICC_HaltA();
+// --- Página principal ---
+void handleRoot() {
+  String html = "<html><head><title>Control RFID</title></head><body>";
+  html += "<h2>Último UID detectado:</h2>" + lastUID + "<br>";
+  html += "<form action='/add' method='get'>";
+  html += "UID: <input name='uid' value='" + lastUID + "'><input type='submit' value='Autorizar'>";
+  html += "</form><br><h3>UIDs autorizados:</h3><ul>";
+  for (int i = 0; i < uidCount; i++) {
+    html += "<li>" + allowedUIDs[i] + "</li>";
+  }
+  html += "</ul></body></html>";
+  server.send(200, "text/html", html);
+}
+
+// --- Agregar UID a la lista ---
+void handleAdd() {
+  if (server.hasArg("uid")) {
+    String newUID = server.arg("uid");
+    newUID.toUpperCase();
+    if (uidCount < MAX_UIDS) {
+      allowedUIDs[uidCount++] = newUID;
+      Serial.println("[Web] UID agregado: " + newUID);
+    }
+  }
+  server.sendHeader("Location", "/");
+  server.send(303);
 }
