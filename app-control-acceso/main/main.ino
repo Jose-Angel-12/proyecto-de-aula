@@ -5,10 +5,11 @@
 #include <SPI.h>
 #include <MFRC522.h>
 #include <ESP32Servo.h>
+#include <Keypad.h>
 
 // =================== CONFIGURACIÓN DE WIFI (AP) ===================
 const char* ssid = "ESP32_ACCESS";
-const char* password = "12345678";
+const char* password = "12345678";  // Mínimo 8 caracteres
 WebServer server(80);
 
 // =================== LCD ===================
@@ -26,7 +27,20 @@ Servo servo;
 #define CLOSE_POS 0
 
 // =================== BUZZER ===================
-#define BUZZER_PIN 15
+#define BUZZER_PIN 16
+
+// =================== TECLADO ===================
+const byte ROWS = 4;
+const byte COLS = 4;
+char keys[ROWS][COLS] = {
+  {'1', '2', '3', 'A'},
+  {'4', '5', '6', 'B'},
+  {'7', '8', '9', 'C'},
+  {'*', '0', '#', 'D'}
+};
+byte rowPins[ROWS] = {14, 15, 25, 26};
+byte colPins[COLS] = {27, 32, 33, 12};
+Keypad keypad = Keypad(makeKeymap(keys), rowPins, colPins, ROWS, COLS);
 
 // =================== USUARIOS ===================
 struct Usuario {
@@ -75,24 +89,59 @@ void manejarRFID() {
   for (Usuario& u : usuarios) {
     if (uid == u.uid) {
       if (u.activo) {
-        mostrarLCD("Bienvenido", u.nombre);
+        mostrarLCD("Bienvenido", u.nombre.substring(u.nombre.length() - 4));
         activarCerradura();
       } else {
-        mostrarLCD("Sin acceso", "");
+        mostrarLCD("Sin acceso", "" );
       }
       break;
     }
   }
-
   delay(2000);
-  mostrarLCD("Acerca tu TAG", "");
+  mostrarLCD("Acerca tu TAG", "o usa el teclado");
   rfid.PICC_HaltA();
 }
 
-// =================== WEB SERVER ===================
+String inputUser = "";
+String inputPassword = "";
+void manejarTeclado() {
+  char tecla = keypad.getKey();
+  if (tecla) {
+    if (tecla == '*') {
+      inputUser = "";  // Reiniciar entrada de usuario
+      inputPassword = "";  // Reiniciar entrada de contraseña
+      mostrarLCD("Introduce Usuario", "");
+    } 
+    else if (tecla == '#') {
+      // Validar usuario y contraseña
+      bool accesoValido = false;
+      for (Usuario& u : usuarios) {
+        if (inputUser == u.nombre && inputPassword == u.password && u.activo) {
+          mostrarLCD("Acceso Concedido", u.nombre);
+          activarCerradura();
+          accesoValido = true;
+          break;
+        }
+      }
+      if (!accesoValido) {
+        mostrarLCD("Acceso Denegado", "");
+      }
+    } 
+    else {
+      if (inputUser.length() < 4) {
+        inputUser += tecla;  // Agregar caracteres al usuario
+        mostrarLCD("Usuario: " + inputUser, "");
+      } 
+      else if (inputPassword.length() < 4) {
+        inputPassword += tecla;  // Agregar caracteres a la contraseña
+        mostrarLCD("Contraseña: " + inputPassword, "");
+      }
+    }
+  }
+}
+
 void handleRoot() {
-  String html = "<html><head><meta name='viewport' content='width=device-width, initial-scale=1'/></head><body>";
-  html += "<h2>Control de acceso RFID</h2>";
+  String html = "<html><body><h2>Control de acceso RFID</h2>";
   for (int i = 0; i < 4; i++) {
     html += "<p>UID *****" + usuarios[i].uid.substring(usuarios[i].uid.length() - 2) +
             " - Estado: " + (usuarios[i].activo ? "<b>ACTIVO</b>" : "<b>INACTIVO</b>") +
@@ -108,7 +157,6 @@ void handleToggle() {
     for (Usuario& u : usuarios) {
       if (u.uid == uid) {
         u.activo = !u.activo;
-        Serial.println("[WEB] Estado cambiado UID: " + uid + " -> " + (u.activo ? "ACTIVO" : "INACTIVO"));
         break;
       }
     }
@@ -123,9 +171,11 @@ void setup() {
   lcd.backlight();
   mostrarLCD("Iniciando...", "");
 
+  // RFID
   SPI.begin();
   rfid.PCD_Init();
 
+  // Servo y buzzer
   servo.attach(SERVO_PIN);
   servo.write(CLOSE_POS);
   pinMode(BUZZER_PIN, OUTPUT);
@@ -138,12 +188,12 @@ void setup() {
   server.on("/", handleRoot);
   server.on("/toggle", handleToggle);
   server.begin();
-
-  mostrarLCD("Acerca tu TAG", "");
+  mostrarLCD("Acerca tu TAG", "o usa el teclado");
 }
 
 // =================== LOOP ===================
 void loop() {
   manejarRFID();
+  manejarTeclado();
   server.handleClient();
 }
