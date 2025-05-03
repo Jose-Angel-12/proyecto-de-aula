@@ -65,7 +65,7 @@ void mostrarDigito(int unidad, int decena) {
   delay(WAIT);
 }
 
-// ✅ NUEVA FIRMA para la función callback compatible con el nuevo ESP-NOW
+//  para la función callback compatible con el nuevo ESP-NOW
 void onDataRecv(const esp_now_recv_info_t *info, const uint8_t *data, int len) {
   memcpy(&incomingData, data, sizeof(incomingData));
   valorRecibido = incomingData.valor;
