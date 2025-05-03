@@ -120,6 +120,7 @@ void manejarTeclado() {
           mostrarLCD("Acceso Concedido", u.nombre);
           activarCerradura();
           accesoValido = true;
+          mostrarLCD("Acerca tu TAG", "o usa el teclado");
           break;
         }
       }
@@ -130,11 +131,11 @@ void manejarTeclado() {
     else {
       if (inputUser.length() < 4) {
         inputUser += tecla;  // Agregar caracteres al usuario
-        mostrarLCD("Usuario: " + inputUser, "");
+        mostrarLCD("Usuario: ", inputUser);
       } 
       else if (inputPassword.length() < 4) {
         inputPassword += tecla;  // Agregar caracteres a la contraseña
-        mostrarLCD("Contraseña: " + inputPassword, "");
+        mostrarLCD("Contrasena: ", inputPassword);
       }
     }
   }
