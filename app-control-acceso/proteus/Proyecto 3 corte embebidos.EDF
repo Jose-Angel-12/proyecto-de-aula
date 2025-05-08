@@ -6,9 +6,9 @@
  (resolution mm 100000)
  (unit mm)
  (structure
-  (boundary (rect pcb -160.10160 9.89840 -109.89840 82.60160))
-  (boundary (path signal 0.20320 -160.00000 10.00000 -110.00000 10.00000 -110.00000 82.50000
-   -160.00000 82.50000 -160.00000 10.00000))
+  (boundary (rect pcb -157.60160 7.39840 -50.09840 85.10160))
+  (boundary (path signal 0.20320 -157.50000 7.50000 -107.50000 7.50000 -107.50000 85.00000
+   -157.50000 85.00000 -157.50000 7.50000))
   (flip_style mirror_first)
   (layer TOP (type signal) (direction off))
   (layer I1 (type signal) (direction off))
@@ -35,7 +35,6 @@
   (via
    $VIA#0_SIGNAL
    (spare
-    PS2
    )
   )
   (rule
@@ -51,109 +50,145 @@
   )
  )
  (placement
-  (component "SIL-100-20_J10" (place J10 -147.50000 22.50000 front 90))
-  (component "SIL-100-20_J7" (place J7 -125.00000 22.50000 front 90))
   (component "CONN-SIL3_J3" (place J3 -117.50000 37.50000 front 270))
   (component "CONN-SIL4_J5" (place J5 -132.46000 77.50000 front 180))
   (component "CONN-SIL8_J8" (place J8 -145.24000 15.00000 front 0))
   (component "CONN-SIL3_J1" (place J1 -117.50000 47.50000 front 90))
+  (component "ESP32 WROOM_M1" (place M1 -74.70000 67.20000 front 0))
+  (component "CONN-SIL18_J4" (place J4 -147.50000 65.68000 front -90))
+  (component "CONN-SIL18_J6" (place J6 -125.00000 68.22000 front -90))
+  (component "CONN-SIL1_AUX19" (place AUX19 -147.50000 68.22000 front 0))
+  (component "CONN-SIL1_AUX20" (place AUX20 -125.00000 22.50000 front 0))
+  (component "CONN-SIL2_J7" (place J7 -117.30000 27.10000 front -90))
  )
  (library
-  (image "SIL-100-20_J10" (side front)
-   (outline (rect TOP -2.64160 -2.64160 50.90160 3.91160))
-   (pin PS0 (rotate 0) 0 0.00000 0.00000)
-   (pin PS0 (rotate 0) 1 2.54000 0.00000)
-   (pin PS0 (rotate 0) 2 5.08000 0.00000)
-   (pin PS0 (rotate 0) 3 7.62000 0.00000)
-   (pin PS0 (rotate 0) 4 10.16000 0.00000)
-   (pin PS0 (rotate 0) 5 12.70000 0.00000)
-   (pin PS0 (rotate 0) 6 15.24000 0.00000)
-   (pin PS0 (rotate 0) 7 17.78000 0.00000)
-   (pin PS0 (rotate 0) 8 20.32000 0.00000)
-   (pin PS0 (rotate 0) 9 22.86000 0.00000)
-   (pin PS0 (rotate 0) 10 25.40000 0.00000)
-   (pin PS0 (rotate 0) 11 27.94000 0.00000)
-   (pin PS0 (rotate 0) 12 30.48000 0.00000)
-   (pin PS0 (rotate 0) 13 33.02000 0.00000)
-   (pin PS0 (rotate 0) 14 35.56000 0.00000)
-   (pin PS0 (rotate 0) 15 38.10000 0.00000)
-   (pin PS0 (rotate 0) 16 40.64000 0.00000)
-   (pin PS0 (rotate 0) 17 43.18000 0.00000)
-   (pin PS0 (rotate 0) 18 45.72000 0.00000)
-   (pin PS0 (rotate 0) 19 48.26000 0.00000)
-  )
-  (image "SIL-100-20_J7" (side front)
-   (outline (rect TOP -2.64160 -2.64160 50.90160 3.91160))
-   (pin PS0 (rotate 0) 0 0.00000 0.00000)
-   (pin PS0 (rotate 0) 1 2.54000 0.00000)
-   (pin PS0 (rotate 0) 2 5.08000 0.00000)
-   (pin PS0 (rotate 0) 3 7.62000 0.00000)
-   (pin PS0 (rotate 0) 4 10.16000 0.00000)
-   (pin PS0 (rotate 0) 5 12.70000 0.00000)
-   (pin PS0 (rotate 0) 6 15.24000 0.00000)
-   (pin PS0 (rotate 0) 7 17.78000 0.00000)
-   (pin PS0 (rotate 0) 8 20.32000 0.00000)
-   (pin PS0 (rotate 0) 9 22.86000 0.00000)
-   (pin PS0 (rotate 0) 10 25.40000 0.00000)
-   (pin PS0 (rotate 0) 11 27.94000 0.00000)
-   (pin PS0 (rotate 0) 12 30.48000 0.00000)
-   (pin PS0 (rotate 0) 13 33.02000 0.00000)
-   (pin PS0 (rotate 0) 14 35.56000 0.00000)
-   (pin PS0 (rotate 0) 15 38.10000 0.00000)
-   (pin PS0 (rotate 0) 16 40.64000 0.00000)
-   (pin PS0 (rotate 0) 17 43.18000 0.00000)
-   (pin PS0 (rotate 0) 18 45.72000 0.00000)
-   (pin PS0 (rotate 0) 19 48.26000 0.00000)
-  )
   (image "CONN-SIL3_J3" (side front)
    (outline (rect TOP -1.37160 -1.37160 6.45160 1.37160))
-   (pin PS1 (rotate 0) 0 0.00000 0.00000)
-   (pin PS1 (rotate 0) 1 2.54000 0.00000)
-   (pin PS1 (rotate 0) 2 5.08000 0.00000)
+   (pin PS0 (rotate 0) 0 0.00000 0.00000)
+   (pin PS0 (rotate 0) 1 2.54000 0.00000)
+   (pin PS0 (rotate 0) 2 5.08000 0.00000)
   )
   (image "CONN-SIL4_J5" (side front)
    (outline (rect TOP -1.37160 -1.37160 8.99160 1.37160))
-   (pin PS1 (rotate 0) 0 0.00000 0.00000)
-   (pin PS1 (rotate 0) 1 2.54000 0.00000)
-   (pin PS1 (rotate 0) 2 5.08000 0.00000)
-   (pin PS1 (rotate 0) 3 7.62000 0.00000)
+   (pin PS0 (rotate 0) 0 0.00000 0.00000)
+   (pin PS0 (rotate 0) 1 2.54000 0.00000)
+   (pin PS0 (rotate 0) 2 5.08000 0.00000)
+   (pin PS0 (rotate 0) 3 7.62000 0.00000)
   )
   (image "CONN-SIL8_J8" (side front)
    (outline (rect TOP -1.37160 -1.37160 19.15160 1.37160))
-   (pin PS1 (rotate 0) 0 0.00000 0.00000)
-   (pin PS1 (rotate 0) 1 2.54000 0.00000)
-   (pin PS1 (rotate 0) 2 5.08000 0.00000)
-   (pin PS1 (rotate 0) 3 7.62000 0.00000)
-   (pin PS1 (rotate 0) 4 10.16000 0.00000)
-   (pin PS1 (rotate 0) 5 12.70000 0.00000)
-   (pin PS1 (rotate 0) 6 15.24000 0.00000)
-   (pin PS1 (rotate 0) 7 17.78000 0.00000)
+   (pin PS0 (rotate 0) 0 0.00000 0.00000)
+   (pin PS0 (rotate 0) 1 2.54000 0.00000)
+   (pin PS0 (rotate 0) 2 5.08000 0.00000)
+   (pin PS0 (rotate 0) 3 7.62000 0.00000)
+   (pin PS0 (rotate 0) 4 10.16000 0.00000)
+   (pin PS0 (rotate 0) 5 12.70000 0.00000)
+   (pin PS0 (rotate 0) 6 15.24000 0.00000)
+   (pin PS0 (rotate 0) 7 17.78000 0.00000)
   )
   (image "CONN-SIL3_J1" (side front)
    (outline (rect TOP -1.37160 -1.37160 6.45160 1.37160))
-   (pin PS1 (rotate 0) 0 0.00000 0.00000)
-   (pin PS1 (rotate 0) 1 2.54000 0.00000)
-   (pin PS1 (rotate 0) 2 5.08000 0.00000)
+   (pin PS0 (rotate 0) 0 0.00000 0.00000)
+   (pin PS0 (rotate 0) 1 2.54000 0.00000)
+   (pin PS0 (rotate 0) 2 5.08000 0.00000)
+  )
+  (image "ESP32 WROOM_M1" (side front)
+   (outline (rect TOP -1.60160 -47.88160 24.60160 2.32160))
+   (pin PS0 (rotate 0) 0 0.00000 0.00000)
+   (pin PS0 (rotate 0) 1 0.00000 -2.54000)
+   (pin PS0 (rotate 0) 2 0.00000 -5.08000)
+   (pin PS0 (rotate 0) 3 0.00000 -7.62000)
+   (pin PS0 (rotate 0) 4 0.00000 -10.16000)
+   (pin PS0 (rotate 0) 5 0.00000 -12.70000)
+   (pin PS0 (rotate 0) 6 0.00000 -15.24000)
+   (pin PS0 (rotate 0) 7 0.00000 -17.78000)
+   (pin PS0 (rotate 0) 8 0.00000 -20.32000)
+   (pin PS0 (rotate 0) 9 0.00000 -22.86000)
+   (pin PS0 (rotate 0) 10 0.00000 -25.40000)
+   (pin PS0 (rotate 0) 11 0.00000 -27.94000)
+   (pin PS0 (rotate 0) 12 0.00000 -30.48000)
+   (pin PS0 (rotate 0) 13 0.00000 -33.02000)
+   (pin PS0 (rotate 0) 14 0.00000 -35.56000)
+   (pin PS0 (rotate 0) 15 0.00000 -38.24000)
+   (pin PS0 (rotate 0) 16 0.00000 -40.78000)
+   (pin PS0 (rotate 0) 17 0.00000 -43.32000)
+   (pin PS0 (rotate 0) 18 0.00000 -45.86000)
+   (pin PS0 (rotate 0) 19 22.90000 -45.84000)
+   (pin PS0 (rotate 0) 20 22.90000 -43.30000)
+   (pin PS0 (rotate 0) 21 22.90000 -40.76000)
+   (pin PS0 (rotate 0) 22 22.90000 -38.22000)
+   (pin PS0 (rotate 0) 23 22.90000 -35.54000)
+   (pin PS0 (rotate 0) 24 22.90000 -33.00000)
+   (pin PS0 (rotate 0) 25 22.90000 -30.46000)
+   (pin PS0 (rotate 0) 26 22.90000 -27.92000)
+   (pin PS0 (rotate 0) 27 22.90000 -25.38000)
+   (pin PS0 (rotate 0) 28 22.90000 -22.84000)
+   (pin PS0 (rotate 0) 29 22.90000 -20.30000)
+   (pin PS0 (rotate 0) 30 22.90000 -17.76000)
+   (pin PS0 (rotate 0) 31 22.90000 -15.22000)
+   (pin PS0 (rotate 0) 32 22.90000 -12.68000)
+   (pin PS0 (rotate 0) 33 22.90000 -10.14000)
+   (pin PS0 (rotate 0) 34 22.90000 -7.60000)
+   (pin PS0 (rotate 0) 35 22.90000 -5.06000)
+   (pin PS0 (rotate 0) 36 22.90000 -2.52000)
+   (pin PS0 (rotate 0) 37 22.90000 0.02000)
+  )
+  (image "CONN-SIL18_J4" (side front)
+   (outline (rect TOP -1.37160 -1.37160 44.55160 1.37160))
+   (pin PS0 (rotate 0) 0 0.00000 0.00000)
+   (pin PS0 (rotate 0) 1 2.54000 0.00000)
+   (pin PS0 (rotate 0) 2 5.08000 0.00000)
+   (pin PS0 (rotate 0) 3 7.62000 0.00000)
+   (pin PS0 (rotate 0) 4 10.16000 0.00000)
+   (pin PS0 (rotate 0) 5 12.70000 0.00000)
+   (pin PS0 (rotate 0) 6 15.24000 0.00000)
+   (pin PS0 (rotate 0) 7 17.78000 0.00000)
+   (pin PS0 (rotate 0) 8 20.32000 0.00000)
+   (pin PS0 (rotate 0) 9 22.86000 0.00000)
+   (pin PS0 (rotate 0) 10 25.40000 0.00000)
+   (pin PS0 (rotate 0) 11 27.94000 0.00000)
+   (pin PS0 (rotate 0) 12 30.48000 0.00000)
+   (pin PS0 (rotate 0) 13 33.02000 0.00000)
+   (pin PS0 (rotate 0) 14 35.56000 0.00000)
+   (pin PS0 (rotate 0) 15 38.10000 0.00000)
+   (pin PS0 (rotate 0) 16 40.64000 0.00000)
+   (pin PS0 (rotate 0) 17 43.18000 0.00000)
+  )
+  (image "CONN-SIL18_J6" (side front)
+   (outline (rect TOP -1.37160 -1.37160 44.55160 1.37160))
+   (pin PS0 (rotate 0) 0 0.00000 0.00000)
+   (pin PS0 (rotate 0) 1 2.54000 0.00000)
+   (pin PS0 (rotate 0) 2 5.08000 0.00000)
+   (pin PS0 (rotate 0) 3 7.62000 0.00000)
+   (pin PS0 (rotate 0) 4 10.16000 0.00000)
+   (pin PS0 (rotate 0) 5 12.70000 0.00000)
+   (pin PS0 (rotate 0) 6 15.24000 0.00000)
+   (pin PS0 (rotate 0) 7 17.78000 0.00000)
+   (pin PS0 (rotate 0) 8 20.32000 0.00000)
+   (pin PS0 (rotate 0) 9 22.86000 0.00000)
+   (pin PS0 (rotate 0) 10 25.40000 0.00000)
+   (pin PS0 (rotate 0) 11 27.94000 0.00000)
+   (pin PS0 (rotate 0) 12 30.48000 0.00000)
+   (pin PS0 (rotate 0) 13 33.02000 0.00000)
+   (pin PS0 (rotate 0) 14 35.56000 0.00000)
+   (pin PS0 (rotate 0) 15 38.10000 0.00000)
+   (pin PS0 (rotate 0) 16 40.64000 0.00000)
+   (pin PS0 (rotate 0) 17 43.18000 0.00000)
+  )
+  (image "CONN-SIL1_AUX19" (side front)
+   (outline (rect TOP -1.37160 -1.37160 1.37160 1.37160))
+   (pin PS0 (rotate 0) 0 0.00000 0.00000)
+  )
+  (image "CONN-SIL1_AUX20" (side front)
+   (outline (rect TOP -1.37160 -1.37160 1.37160 1.37160))
+   (pin PS0 (rotate 0) 0 0.00000 0.00000)
+  )
+  (image "CONN-SIL2_J7" (side front)
+   (outline (rect TOP -1.37160 -1.37160 3.91160 1.37160))
+   (pin PS0 (rotate 0) 0 0.00000 0.00000)
+   (pin PS0 (rotate 0) 1 2.54000 0.00000)
   )
   (padstack PS0 (absolute on)
-   (shape (circle TOP 2.03200 0 0))
-   (shape (circle I1 2.03200 0 0))
-   (shape (circle I2 2.03200 0 0))
-   (shape (circle I3 2.03200 0 0))
-   (shape (circle I4 2.03200 0 0))
-   (shape (circle I5 2.03200 0 0))
-   (shape (circle I6 2.03200 0 0))
-   (shape (circle I7 2.03200 0 0))
-   (shape (circle I8 2.03200 0 0))
-   (shape (circle I9 2.03200 0 0))
-   (shape (circle I10 2.03200 0 0))
-   (shape (circle I11 2.03200 0 0))
-   (shape (circle I12 2.03200 0 0))
-   (shape (circle I13 2.03200 0 0))
-   (shape (circle I14 2.03200 0 0))
-   (shape (circle BOT 2.03200 0 0))
-  )
-  (padstack PS1 (absolute on)
    (shape (rect TOP -1.01600 -1.01600 1.01600 1.01600))
    (shape (rect I1 -1.01600 -1.01600 1.01600 1.01600))
    (shape (rect I2 -1.01600 -1.01600 1.01600 1.01600))
@@ -170,24 +205,6 @@
    (shape (rect I13 -1.01600 -1.01600 1.01600 1.01600))
    (shape (rect I14 -1.01600 -1.01600 1.01600 1.01600))
    (shape (rect BOT -1.01600 -1.01600 1.01600 1.01600))
-  )
-  (padstack PS2 (absolute on)
-   (shape (circle TOP 0.76200 0 0))
-   (shape (circle I1 0.76200 0 0))
-   (shape (circle I2 0.76200 0 0))
-   (shape (circle I3 0.76200 0 0))
-   (shape (circle I4 0.76200 0 0))
-   (shape (circle I5 0.76200 0 0))
-   (shape (circle I6 0.76200 0 0))
-   (shape (circle I7 0.76200 0 0))
-   (shape (circle I8 0.76200 0 0))
-   (shape (circle I9 0.76200 0 0))
-   (shape (circle I10 0.76200 0 0))
-   (shape (circle I11 0.76200 0 0))
-   (shape (circle I12 0.76200 0 0))
-   (shape (circle I13 0.76200 0 0))
-   (shape (circle I14 0.76200 0 0))
-   (shape (circle BOT 0.76200 0 0))
   )
   (padstack $VIA#0_SIGNAL (absolute on)
    (shape (circle TOP 0.76200 0 0))
@@ -209,6 +226,15 @@
   )
  )
  (network
+  (net "#00048"
+   (circuit
+    (use_layer BOT)
+    (use_via
+     $VIA#0_SIGNAL
+    )
+   )
+   (pins M1-13 M1-31 M1-37)
+  )
   (net "0"
    (circuit
     (use_layer BOT)
@@ -216,7 +242,7 @@
      $VIA#0_SIGNAL
     )
    )
-   (pins J10-14)
+   (pins J6-13)
   )
   (net "12"
    (circuit
@@ -225,7 +251,7 @@
      $VIA#0_SIGNAL
     )
    )
-   (pins J7-6)
+   (pins J4-6)
   )
   (net "13"
    (circuit
@@ -234,7 +260,7 @@
      $VIA#0_SIGNAL
     )
    )
-   (pins J7-4 J3-2)
+   (pins J3-2 J4-4)
   )
   (net "14"
    (circuit
@@ -243,7 +269,7 @@
      $VIA#0_SIGNAL
     )
    )
-   (pins J7-7)
+   (pins J4-7)
   )
   (net "15"
    (circuit
@@ -252,7 +278,7 @@
      $VIA#0_SIGNAL
     )
    )
-   (pins J10-16)
+   (pins J6-15)
   )
   (net "16"
    (circuit
@@ -261,7 +287,7 @@
      $VIA#0_SIGNAL
     )
    )
-   (pins J10-12 J1-2)
+   (pins J1-2 J6-11)
   )
   (net "17"
    (circuit
@@ -270,7 +296,7 @@
      $VIA#0_SIGNAL
     )
    )
-   (pins J10-11)
+   (pins J6-10)
   )
   (net "18"
    (circuit
@@ -279,7 +305,7 @@
      $VIA#0_SIGNAL
     )
    )
-   (pins J10-9 J8-1)
+   (pins J8-3 J6-8)
   )
   (net "19"
    (circuit
@@ -288,7 +314,7 @@
      $VIA#0_SIGNAL
     )
    )
-   (pins J10-8 J8-3)
+   (pins J8-1 J6-7)
   )
   (net "2"
    (circuit
@@ -297,7 +323,7 @@
      $VIA#0_SIGNAL
     )
    )
-   (pins J10-15)
+   (pins J6-14)
   )
   (net "21"
    (circuit
@@ -306,7 +332,7 @@
      $VIA#0_SIGNAL
     )
    )
-   (pins J10-6 J5-2)
+   (pins J5-2 J6-5)
   )
   (net "22"
    (circuit
@@ -315,7 +341,7 @@
      $VIA#0_SIGNAL
     )
    )
-   (pins J10-3 J5-3)
+   (pins J5-3 J6-2)
   )
   (net "23"
    (circuit
@@ -324,7 +350,7 @@
      $VIA#0_SIGNAL
     )
    )
-   (pins J10-2 J8-2)
+   (pins J8-2 J6-1)
   )
   (net "25"
    (circuit
@@ -333,7 +359,7 @@
      $VIA#0_SIGNAL
     )
    )
-   (pins J7-10)
+   (pins J4-10)
   )
   (net "26"
    (circuit
@@ -342,7 +368,7 @@
      $VIA#0_SIGNAL
     )
    )
-   (pins J7-9)
+   (pins J4-9)
   )
   (net "27"
    (circuit
@@ -351,7 +377,7 @@
      $VIA#0_SIGNAL
     )
    )
-   (pins J7-8)
+   (pins J4-8)
   )
   (net "3.3V"
    (circuit
@@ -360,7 +386,7 @@
      $VIA#0_SIGNAL
     )
    )
-   (pins J7-18 J5-0 J8-7 J1-1)
+   (pins J5-0 J8-7 J1-1 AUX19-0)
   )
   (net "32"
    (circuit
@@ -369,7 +395,7 @@
      $VIA#0_SIGNAL
     )
    )
-   (pins J7-12)
+   (pins J4-12)
   )
   (net "33"
    (circuit
@@ -378,7 +404,7 @@
      $VIA#0_SIGNAL
     )
    )
-   (pins J7-11)
+   (pins J4-11)
   )
   (net "34"
    (circuit
@@ -387,7 +413,7 @@
      $VIA#0_SIGNAL
     )
    )
-   (pins J7-14)
+   (pins J4-14)
   )
   (net "35"
    (circuit
@@ -396,7 +422,7 @@
      $VIA#0_SIGNAL
     )
    )
-   (pins J7-13)
+   (pins J4-13)
   )
   (net "4"
    (circuit
@@ -405,7 +431,7 @@
      $VIA#0_SIGNAL
     )
    )
-   (pins J10-13 J8-5)
+   (pins J8-5 J6-12)
   )
   (net "5"
    (circuit
@@ -414,7 +440,7 @@
      $VIA#0_SIGNAL
     )
    )
-   (pins J10-10)
+   (pins J6-9)
   )
   (net "5V"
    (circuit
@@ -423,7 +449,16 @@
      $VIA#0_SIGNAL
     )
    )
-   (pins J7-0 J3-1)
+   (pins J4-0)
+  )
+  (net "5VS"
+   (circuit
+    (use_layer BOT)
+    (use_via
+     $VIA#0_SIGNAL
+    )
+   )
+   (pins J3-1 J7-0)
   )
   (net "CLK"
    (circuit
@@ -432,7 +467,7 @@
      $VIA#0_SIGNAL
     )
    )
-   (pins J10-19)
+   (pins AUX20-0)
   )
   (net "CMD"
    (circuit
@@ -441,7 +476,7 @@
      $VIA#0_SIGNAL
     )
    )
-   (pins J7-1)
+   (pins J4-1)
   )
   (net "CN"
    (circuit
@@ -450,7 +485,7 @@
      $VIA#0_SIGNAL
     )
    )
-   (pins J7-17)
+   (pins J4-17)
   )
   (net "D0"
    (circuit
@@ -459,7 +494,7 @@
      $VIA#0_SIGNAL
     )
    )
-   (pins J10-18)
+   (pins J6-17)
   )
   (net "D1"
    (circuit
@@ -468,7 +503,7 @@
      $VIA#0_SIGNAL
     )
    )
-   (pins J10-17)
+   (pins J6-16)
   )
   (net "D2"
    (circuit
@@ -477,7 +512,7 @@
      $VIA#0_SIGNAL
     )
    )
-   (pins J7-3)
+   (pins J4-3)
   )
   (net "D3"
    (circuit
@@ -486,7 +521,7 @@
      $VIA#0_SIGNAL
     )
    )
-   (pins J7-2)
+   (pins J4-2)
   )
   (net "GND1"
    (circuit
@@ -495,7 +530,7 @@
      $VIA#0_SIGNAL
     )
    )
-   (pins J7-5)
+   (pins J4-5)
   )
   (net "GND2"
    (circuit
@@ -504,7 +539,7 @@
      $VIA#0_SIGNAL
     )
    )
-   (pins J10-1 J3-0 J5-1 J8-6)
+   (pins J5-1 J8-6 J6-0)
   )
   (net "GND3"
    (circuit
@@ -513,7 +548,16 @@
      $VIA#0_SIGNAL
     )
    )
-   (pins J10-7 J1-0)
+   (pins J1-0 J6-6)
+  )
+  (net "GNDS"
+   (circuit
+    (use_layer BOT)
+    (use_via
+     $VIA#0_SIGNAL
+    )
+   )
+   (pins J3-0 J7-1)
   )
   (net "RX"
    (circuit
@@ -522,7 +566,7 @@
      $VIA#0_SIGNAL
     )
    )
-   (pins J10-5)
+   (pins J6-4)
   )
   (net "TK"
    (circuit
@@ -531,7 +575,7 @@
      $VIA#0_SIGNAL
     )
    )
-   (pins J10-4)
+   (pins J6-3)
   )
   (net "VN"
    (circuit
@@ -540,7 +584,7 @@
      $VIA#0_SIGNAL
     )
    )
-   (pins J7-15)
+   (pins J4-15)
   )
   (net "VP"
    (circuit
@@ -549,9 +593,10 @@
      $VIA#0_SIGNAL
     )
    )
-   (pins J7-16)
+   (pins J4-16)
   )
   (class SIGNAL
+   "#00048"
    "0"
    "12"
    "13"
@@ -576,6 +621,7 @@
    "4"
    "5"
    "5V"
+   "5VS"
    "CLK"
    "CMD"
    "CN"
@@ -586,6 +632,7 @@
    "GND1"
    "GND2"
    "GND3"
+   "GNDS"
    "RX"
    "TK"
    "VN"
@@ -606,6 +653,44 @@
   )
  )
  (wiring
-  (via PS2 -215.00000 45.00000 (net {NC-1}))
+   (wire (path BOT 0.76200 -147.50000 55.52000 -150.49500 55.52000 -150.49500 13.33500
+    -149.22500 12.06500 -121.92000 12.06500 -120.65000 13.33500 -120.65000 29.27000 -117.50000 32.42000
+  ) (net "13"))
+   (wire (path BOT 0.76200 -125.00000 40.28000 -123.19000 40.28000 -123.19000 42.48034
+    -121.92000 43.75034 -116.90466 43.75034 -115.57000 45.08500 -115.57000 52.58000 -117.50000 52.58000
+  ) (net "16"))
+   (wire (path BOT 0.76200 -125.00000 47.90000 -135.89000 47.90000 -137.62000 46.17000
+   -137.62000 15.00000) (net "18"))
+   (wire (path BOT 0.76200 -125.00000 55.52000 -123.19000 55.52000 -121.92000 56.79000
+    -121.92000 73.02500 -123.19000 74.29500 -137.54000 74.29500 -137.54000 77.50000)
+   (net "21"))
+   (wire (path BOT 0.76200 -125.00000 63.14000 -123.19000 63.14000 -123.19000 70.48500
+   -138.81000 70.48500 -140.08000 71.75500 -140.08000 77.50000) (net "22"))
+   (wire (path BOT 0.76200 -125.00000 65.68000 -138.43000 65.68000 -140.16000 63.95000
+   -140.16000 15.00000) (net "23"))
+   (wire (path BOT 0.76200 -118.74500 54.61000 -114.30000 54.61000 -113.03000 53.34000
+    -113.03000 41.91000 -114.30000 40.64000 -120.65000 40.64000 -121.92000 39.37000 -121.92000 20.54000
+   -127.46000 15.00000) (net "3.3V"))
+   (wire (path BOT 0.76200 -132.46000 77.50000 -120.01500 77.50000 -118.74500 76.23000
+   -118.74500 54.61000) (net "3.3V"))
+   (wire (path BOT 0.76200 -118.74500 54.61000 -119.38000 53.97500 -119.38000 50.04000
+   -117.50000 50.04000) (net "3.3V"))
+   (wire (path BOT 0.76200 -147.50000 68.22000 -147.50000 79.19500 -146.05000 80.64500
+   -133.73000 80.64500 -132.46000 79.37500 -132.46000 77.50000) (net "3.3V"))
+   (wire (path BOT 0.76200 -125.00000 37.74000 -130.81000 37.74000 -132.54000 36.01000
+   -132.54000 15.00000) (net "4"))
+   (wire (path BOT 0.76200 -117.50000 34.96000 -119.38000 34.96000 -119.38000 39.37000
+    -114.30000 39.37000 -113.03000 38.10000 -113.03000 22.86000 -114.30000 21.59000 -118.11000 21.59000
+   -119.38000 22.86000 -119.38000 27.10000 -117.30000 27.10000) (net "5VS"))
+   (wire (path BOT 0.76200 -141.60500 67.94500 -141.60500 21.59000 -147.32000 15.87500
+   -147.32000 13.33500 -130.00000 13.33500 -130.00000 15.00000) (net "GND2"))
+   (wire (path BOT 0.76200 -141.60500 67.94500 -142.24000 68.58000 -142.24000 79.37500
+   -135.00000 79.37500 -135.00000 77.50000) (net "GND2"))
+   (wire (path BOT 0.76200 -141.60500 67.94500 -140.61000 67.94500 -140.33500 68.22000
+   -125.00000 68.22000) (net "GND2"))
+   (wire (path BOT 0.76200 -125.00000 52.98000 -121.92000 52.98000 -121.92000 48.77000
+   -120.65000 47.50000 -117.50000 47.50000) (net "GND3"))
+   (wire (path BOT 0.76200 -117.50000 37.50000 -115.57000 37.50000 -115.57000 24.56000
+   -117.30000 24.56000) (net "GNDS"))
  )
 )
