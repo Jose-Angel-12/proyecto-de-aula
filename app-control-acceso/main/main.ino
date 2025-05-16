@@ -113,7 +113,6 @@ void manejarTeclado() {
       mostrarLCD("Introduce Usuario", "");
     } 
     else if (tecla == '#') {
-      // Validar usuario y contraseña
       bool accesoValido = false;
       for (Usuario& u : usuarios) {
         if (inputUser == u.nombre && inputPassword == u.password && u.activo) {
@@ -130,11 +129,11 @@ void manejarTeclado() {
     } 
     else {
       if (inputUser.length() < 4) {
-        inputUser += tecla;  // Agregar caracteres al usuario
+        inputUser += tecla;
         mostrarLCD("Usuario: ", inputUser);
       } 
       else if (inputPassword.length() < 4) {
-        inputPassword += tecla;  // Agregar caracteres a la contraseña
+        inputPassword += tecla;
         mostrarLCD("Contrasena: ", inputPassword);
       }
     }
@@ -142,13 +141,85 @@ void manejarTeclado() {
 }
 
 void handleRoot() {
-  String html = "<html><body><h2>Control de acceso RFID</h2>";
+  String html = R"rawliteral(
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset='UTF-8'>
+      <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+      <title>Control de Acceso RFID</title>
+      <style>
+        body {
+          background: #f0f2f5;
+          font-family: Arial, sans-serif;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          margin: 0;
+          padding: 0;
+        }
+        .container {
+          margin-top: 30px;
+          background: #fff;
+          padding: 20px;
+          border-radius: 12px;
+          box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+          max-width: 400px;
+          width: 90%;
+        }
+        h2 {
+          text-align: center;
+          margin-bottom: 20px;
+          color: #333;
+        }
+        .user {
+          background: #f9f9f9;
+          margin: 10px 0;
+          padding: 15px;
+          border-radius: 8px;
+          text-align: center;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .estado {
+          display: block;
+          margin: 10px 0;
+          font-weight: bold;
+          color: #555;
+        }
+        .boton {
+          background: #28a745;
+          color: white;
+          padding: 10px 20px;
+          text-decoration: none;
+          border-radius: 8px;
+          display: inline-block;
+          margin-top: 10px;
+          transition: background 0.3s ease;
+        }
+        .boton:hover {
+          background: #218838;
+        }
+      </style>
+    </head>
+    <body>
+      <div class='container'>
+        <h2>Control de Acceso RFID</h2>
+  )rawliteral";
+
   for (int i = 0; i < 4; i++) {
-    html += "<p>UID *****" + usuarios[i].uid.substring(usuarios[i].uid.length() - 2) +
-            " - Estado: " + (usuarios[i].activo ? "<b>ACTIVO</b>" : "<b>INACTIVO</b>") +
-            " <a href='/toggle?uid=" + usuarios[i].uid + "'>[Cambiar]</a></p>";
+    html += "<div class='user'>";
+    html += "<p>UID *****" + usuarios[i].uid.substring(usuarios[i].uid.length() - 2) + "</p>";
+    html += "<span class='estado'>" + String(usuarios[i].activo ? "ACTIVO" : "INACTIVO") + "</span>";
+    html += "<a class='boton' href='/toggle?uid=" + usuarios[i].uid + "'>Cambiar Estado</a>";
+    html += "</div>";
   }
-  html += "</body></html>";
+
+  html += R"rawliteral(
+      </div>
+    </body>
+    </html>
+  )rawliteral";
+
   server.send(200, "text/html", html);
 }
 
@@ -172,17 +243,14 @@ void setup() {
   lcd.backlight();
   mostrarLCD("Iniciando...", "");
 
-  // RFID
   SPI.begin();
   rfid.PCD_Init();
 
-  // Servo y buzzer
   servo.attach(SERVO_PIN);
   servo.write(CLOSE_POS);
   pinMode(BUZZER_PIN, OUTPUT);
   digitalWrite(BUZZER_PIN, LOW);
 
-  // WiFi como Access Point
   WiFi.softAP(ssid, password);
   Serial.println("AP IP address: " + WiFi.softAPIP().toString());
 
