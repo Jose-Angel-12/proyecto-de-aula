@@ -9,7 +9,7 @@
 
 // =================== CONFIGURACIÓN DE WIFI (AP) ===================
 const char* ssid = "ESP32_ACCESS";
-const char* password = "12345678";  // Mínimo 8 caracteres
+const char* password = "12345678";
 WebServer server(80);
 
 // =================== LCD ===================
@@ -42,20 +42,35 @@ byte rowPins[ROWS] = {14, 15, 25, 26};
 byte colPins[COLS] = {27, 32, 33, 12};
 Keypad keypad = Keypad(makeKeymap(keys), rowPins, colPins, ROWS, COLS);
 
-// =================== USUARIOS ===================
-struct Usuario {
+// =================== USUARIOS RFID ===================
+struct UsuarioRFID {
   String uid;
   String nombre;
   String password;
   bool activo;
 };
 
-Usuario usuarios[] = {
+UsuarioRFID usuarios[] = {
   {"43F4A914", "1111", "1234", false},
   {"4357FFA5", "2222", "2345", false},
   {"5B0A8122", "3333", "3456", false},
   {"B32A4B29", "4444", "4567", false}
 };
+
+// =================== USUARIOS WEB ===================
+struct UsuarioWeb {
+  String usuario;
+  String contrasena;
+};
+
+UsuarioWeb usuariosWeb[] = {
+  {"admin", "admin123"},
+  // Puedes agregar más aquí
+  // {"usuario2", "clave2"}
+};
+
+// =================== SESIÓN WEB ===================
+bool webLogeado = false;
 
 // =================== FUNCIONES ===================
 void activarCerradura() {
@@ -86,13 +101,13 @@ void manejarRFID() {
   uid.toUpperCase();
   Serial.println("[RFID] UID detectado: " + uid);
 
-  for (Usuario& u : usuarios) {
+  for (UsuarioRFID& u : usuarios) {
     if (uid == u.uid) {
       if (u.activo) {
         mostrarLCD("Bienvenido", u.nombre.substring(u.nombre.length() - 4));
         activarCerradura();
       } else {
-        mostrarLCD("Sin acceso", "" );
+        mostrarLCD("Sin acceso", "");
       }
       break;
     }
@@ -108,13 +123,12 @@ void manejarTeclado() {
   char tecla = keypad.getKey();
   if (tecla) {
     if (tecla == '*') {
-      inputUser = "";  // Reiniciar entrada de usuario
-      inputPassword = "";  // Reiniciar entrada de contraseña
+      inputUser = "";
+      inputPassword = "";
       mostrarLCD("Introduce Usuario", "");
-    } 
-    else if (tecla == '#') {
+    } else if (tecla == '#') {
       bool accesoValido = false;
-      for (Usuario& u : usuarios) {
+      for (UsuarioRFID& u : usuarios) {
         if (inputUser == u.nombre && inputPassword == u.password && u.activo) {
           mostrarLCD("Acceso Concedido", u.nombre);
           activarCerradura();
@@ -126,13 +140,11 @@ void manejarTeclado() {
       if (!accesoValido) {
         mostrarLCD("Acceso Denegado", "");
       }
-    } 
-    else {
+    } else {
       if (inputUser.length() < 4) {
         inputUser += tecla;
         mostrarLCD("Usuario: ", inputUser);
-      } 
-      else if (inputPassword.length() < 4) {
+      } else if (inputPassword.length() < 4) {
         inputPassword += tecla;
         mostrarLCD("Contrasena: ", inputPassword);
       }
@@ -140,94 +152,65 @@ void manejarTeclado() {
   }
 }
 
+void handleLogin() {
+  if (server.hasArg("user") && server.hasArg("pass")) {
+    String user = server.arg("user");
+    String pass = server.arg("pass");
+    webLogeado = false;
+    for (UsuarioWeb& u : usuariosWeb) {
+      if (user == u.usuario && pass == u.contrasena) {
+        webLogeado = true;
+        break;
+      }
+    }
+    if (webLogeado) {
+      server.sendHeader("Location", "/");
+      server.send(302, "text/plain", "Login correcto");
+    } else {
+      server.send(200, "text/html", "<h3>Usuario o contraseña incorrectos</h3><a href='/login'>Volver</a>");
+    }
+  } else {
+    String html = "<!DOCTYPE html><html><head><meta name='viewport' content='width=device-width, initial-scale=1'><meta charset='UTF-8'></head><body><form method='get'><h3>Iniciar sesión</h3>Usuario: <input name='user'><br>Contraseña: <input name='pass' type='password'><br><input type='submit' value='Entrar'></form></body><html/>";
+
+    server.send(200, "text/html", html);
+  }
+}
+
 void handleRoot() {
-  String html = R"rawliteral(
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <meta charset='UTF-8'>
-      <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-      <title>Control de Acceso RFID</title>
-      <style>
-        body {
-          background: #f0f2f5;
-          font-family: Arial, sans-serif;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          margin: 0;
-          padding: 0;
-        }
-        .container {
-          margin-top: 30px;
-          background: #fff;
-          padding: 20px;
-          border-radius: 12px;
-          box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-          max-width: 400px;
-          width: 90%;
-        }
-        h2 {
-          text-align: center;
-          margin-bottom: 20px;
-          color: #333;
-        }
-        .user {
-          background: #f9f9f9;
-          margin: 10px 0;
-          padding: 15px;
-          border-radius: 8px;
-          text-align: center;
-          box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-        .estado {
-          display: block;
-          margin: 10px 0;
-          font-weight: bold;
-          color: #555;
-        }
-        .boton {
-          background: #28a745;
-          color: white;
-          padding: 10px 20px;
-          text-decoration: none;
-          border-radius: 8px;
-          display: inline-block;
-          margin-top: 10px;
-          transition: background 0.3s ease;
-        }
-        .boton:hover {
-          background: #218838;
-        }
-      </style>
-    </head>
-    <body>
-      <div class='container'>
-        <h2>Control de Acceso RFID</h2>
-  )rawliteral";
+  if (!webLogeado) {
+    server.sendHeader("Location", "/login");
+    server.send(302, "text/plain", "Redirigiendo a login...");
+    return;
+  }
+
+  String html = "<!DOCTYPE html><html><head><meta name='viewport' content='width=device-width, initial-scale=1'><meta charset='UTF-8'><title>Control de Acceso RFID</title>";
+  html += "<style>body{font-family: Arial, sans-serif; text-align:center; background-color:#f0f0f0;} .container{max-width: 400px; margin: auto; background: white; padding: 20px; border-radius: 10px;} h2{color: #333;} .user-card{background: #fafafa; padding: 10px; margin: 10px 0; border-radius: 8px;} .activo{color: green; font-weight: bold;} .inactivo{color: red; font-weight: bold;} a{display:inline-block; margin-top:5px; padding:5px 10px; background:#007BFF; color:white; border-radius:5px; text-decoration:none;} a:hover{background:#0056b3;}</style></head><body>";
+  html += "<div class='container'><h2>Control de acceso RFID</h2>";
 
   for (int i = 0; i < 4; i++) {
-    html += "<div class='user'>";
-    html += "<p>Usuario: " + usuarios[i].nombre + "<p>";
-    html += "<p>UID *****" + usuarios[i].uid.substring(usuarios[i].uid.length() - 2) + "</p>";
-    html += "<span class='estado'>" + String(usuarios[i].activo ? "ACTIVO" : "INACTIVO") + "</span>";
-    html += "<a class='boton' href='/toggle?uid=" + usuarios[i].uid + "'>Cambiar Estado</a>";
+    html += "<div class='user-card'>";
+    html += "<div><b>Usuario:</b> " + usuarios[i].nombre + "</div>";
+    html += "<div><b>UID:</b> *****" + usuarios[i].uid.substring(usuarios[i].uid.length() - 2) + "</div>";
+    html += "<div>Estado: " + String(usuarios[i].activo ? "<span class='activo'>ACTIVO</span>" : "<span class='inactivo'>INACTIVO</span>") + "</div>";
+    html += "<a href='/toggle?uid=" + usuarios[i].uid + "'>Cambiar estado</a>";
     html += "</div>";
   }
 
-  html += R"rawliteral(
-      </div>
-    </body>
-    </html>
-  )rawliteral";
-
+  html += "<a href='/abrir'>ABRIR MANUAL</a><br><a href='/logout'>Cerrar sesión</a>";
+  html += "</div></body></html>";
   server.send(200, "text/html", html);
 }
 
 void handleToggle() {
+  if (!webLogeado) {
+    server.sendHeader("Location", "/login");
+    server.send(302, "text/plain", "Redirigiendo a login...");
+    return;
+  }
+
   if (server.hasArg("uid")) {
     String uid = server.arg("uid");
-    for (Usuario& u : usuarios) {
+    for (UsuarioRFID& u : usuarios) {
       if (u.uid == uid) {
         u.activo = !u.activo;
         break;
@@ -235,6 +218,23 @@ void handleToggle() {
     }
   }
   handleRoot();
+}
+
+void handleAbrir() {
+  if (webLogeado) {
+    activarCerradura();
+    server.sendHeader("Location", "/");
+    server.send(302, "text/plain", "Cerradura abierta");
+  } else {
+    server.sendHeader("Location", "/login");
+    server.send(302, "text/plain", "Redirigiendo a login...");
+  }
+}
+
+void handleLogout() {
+  webLogeado = false;
+  server.sendHeader("Location", "/login");
+  server.send(302, "text/plain", "Cerrando sesión...");
 }
 
 // =================== SETUP ===================
@@ -256,7 +256,10 @@ void setup() {
   Serial.println("AP IP address: " + WiFi.softAPIP().toString());
 
   server.on("/", handleRoot);
+  server.on("/login", handleLogin);
   server.on("/toggle", handleToggle);
+  server.on("/abrir", handleAbrir);
+  server.on("/logout", handleLogout);
   server.begin();
   mostrarLCD("Acerca tu TAG", "o usa el teclado");
 }
