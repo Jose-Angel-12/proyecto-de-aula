@@ -208,6 +208,7 @@ void handleRoot() {
 
   for (int i = 0; i < 4; i++) {
     html += "<div class='user'>";
+    html += "<p>Usuario: " + usuarios[i].nombre + "<p>";
     html += "<p>UID *****" + usuarios[i].uid.substring(usuarios[i].uid.length() - 2) + "</p>";
     html += "<span class='estado'>" + String(usuarios[i].activo ? "ACTIVO" : "INACTIVO") + "</span>";
     html += "<a class='boton' href='/toggle?uid=" + usuarios[i].uid + "'>Cambiar Estado</a>";
