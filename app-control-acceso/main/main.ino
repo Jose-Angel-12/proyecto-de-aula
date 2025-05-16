@@ -171,8 +171,8 @@ void handleLogin() {
     }
   } else {
     String html = "<!DOCTYPE html><html><head><meta name='viewport' content='width=device-width, initial-scale=1'><meta charset='UTF-8'><title>Login: Control de Acceso</title>";
-    html += "<style>body{font-family: Arial, sans-serif;text-align: center;background-color: #f0f0f0;}a{display: inline-block;margin-top: 5px;padding: 5px 10px;color: white;border-radius: 5px;text-decoration: none;}</style></head><body>";
-    html +="<form method='get'><h3>Iniciar sesión</h3>Usuario: <input name='user'><br>Contraseña: <input name='pass' type='password'><br><input type='submit' value='Entrar'></form></body><html/>";
+    html += "<style>body{font-family: Arial, sans-serif;text-align: center;background-color: #f0f0f0;}button{display: inline-block;margin-top: 5px;padding: 5px 10px;background: #007BFF;color: white;border-radius: 5px;text-decoration: none;}</style></head><body>";
+    html +="<form method='get'><h3>Iniciar sesión</h3>Usuario: <input name='user'><br>Contraseña: <input name='pass' type='password'><br><button value='Entrar'>Entrar</button></form></body><html/>";
 
     server.send(200, "text/html", html);
   }
