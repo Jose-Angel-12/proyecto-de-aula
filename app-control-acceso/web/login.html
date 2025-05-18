@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <meta charset='UTF-8'>
+    <title>Login: Control de Acceso</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        h2{
+            color: #333;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+
+        }
+
+        form {
+            max-width: 500px;
+            margin: auto;
+            background: #f0f0f0;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        form div {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        input {
+            border-radius: 5px;
+            border-color: #f0f0f0;
+            padding: 5px;
+            width: 100%;
+            margin-left: 10px;
+        }
+
+        button {
+            display: inline-block;
+            margin-top: 5px;
+            padding: 5px 10px;
+            background: #007BFF;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            border-color: #007BFF;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <form method='get'>
+        <h2>Iniciar sesión</h2>
+        <div>Usuario: <input name='user'></div>
+        <div>Contraseña: <input name='pass' type='password'></div>
+        <button value='Entrar'>Entrar</button>
+    </form>
+</body>
+<html />
