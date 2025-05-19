@@ -33,13 +33,13 @@ Servo servo;
 const byte ROWS = 4;
 const byte COLS = 4;
 char keys[ROWS][COLS] = {
-  {'1', '2', '3', 'A'},
-  {'4', '5', '6', 'B'},
-  {'7', '8', '9', 'C'},
-  {'*', '0', '#', 'D'}
+  { '1', '2', '3', 'A' },
+  { '4', '5', '6', 'B' },
+  { '7', '8', '9', 'C' },
+  { '*', '0', '#', 'D' }
 };
-byte rowPins[ROWS] = {14, 15, 25, 26};
-byte colPins[COLS] = {27, 32, 33, 12};
+byte rowPins[ROWS] = { 14, 15, 25, 26 };
+byte colPins[COLS] = { 27, 32, 33, 12 };
 Keypad keypad = Keypad(makeKeymap(keys), rowPins, colPins, ROWS, COLS);
 
 // =================== USUARIOS RFID ===================
@@ -51,10 +51,10 @@ struct UsuarioRFID {
 };
 
 UsuarioRFID usuarios[] = {
-  {"43F4A914", "1111", "1234", false},
-  {"4357FFA5", "2222", "2345", false},
-  {"5B0A8122", "3333", "3456", false},
-  {"B32A4B29", "4444", "4567", false}
+  { "43F4A914", "1111", "1234", false },
+  { "4357FFA5", "2222", "2345", false },
+  { "5B0A8122", "3333", "3456", false },
+  { "B32A4B29", "4444", "4567", false }
 };
 
 // =================== USUARIOS WEB ===================
@@ -64,7 +64,8 @@ struct UsuarioWeb {
 };
 
 UsuarioWeb usuariosWeb[] = {
-  {"admin", "admin123"},
+  { "admin", "admin123" },
+  { "jose", "jose123" },
   // Puedes agregar más aquí
   // {"usuario2", "clave2"}
 };
@@ -170,9 +171,74 @@ void handleLogin() {
       server.send(200, "text/html", "<h3>Usuario o contraseña incorrectos</h3><a href='/login'>Volver</a>");
     }
   } else {
-    String html = "<!DOCTYPE html><html><head><meta name='viewport' content='width=device-width, initial-scale=1'><meta charset='UTF-8'><title>Login: Control de Acceso</title>";
-    html += "<style>body{font-family: Arial, sans-serif;text-align: center;background-color: #f0f0f0;}button{display: inline-block;margin-top: 5px;padding: 5px 10px;background: #007BFF;color: white;border-radius: 5px;text-decoration: none;}</style></head><body>";
-    html +="<form method='get'><h3>Iniciar sesión</h3>Usuario: <input name='user'><br>Contraseña: <input name='pass' type='password'><br><button value='Entrar'>Entrar</button></form></body><html/>";
+    String html = R"rawliteral(
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta name='viewport' content='width=device-width, initial-scale=1'>
+        <meta charset='UTF-8'>
+        <title>Login: Control de Acceso</title>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f9f9f9;
+          }
+          form {
+            max-width: 400px;
+            margin: auto;
+            background: #f0f0f0;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+          }
+          h3 {
+            color: #333;
+          }
+          div {
+            margin-bottom: 15px;
+            text-align: left;
+          }
+          label {
+            display: block;
+            margin-bottom: 5px;
+          }
+          input {
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            padding: 8px;
+            width: 100%;
+            box-sizing: border-box;
+          }
+          button {
+            padding: 10px 20px;
+            background: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+          }
+          button:hover {
+            background: #0056b3;
+          }
+        </style>
+      </head>
+      <body>
+        <form method='get'>
+          <h3>Iniciar sesión</h3>
+          <div>
+            <label>Usuario:</label>
+            <input name='user' required>
+          </div>
+          <div>
+            <label>Contraseña:</label>
+            <input name='pass' type='password' required>
+          </div>
+          <button type='submit'>Entrar</button>
+        </form>
+      </body>
+      </html>
+    )rawliteral";
 
     server.send(200, "text/html", html);
   }
@@ -185,9 +251,61 @@ void handleRoot() {
     return;
   }
 
-  String html = "<!DOCTYPE html><html><head><meta name='viewport' content='width=device-width, initial-scale=1'><meta charset='UTF-8'><title>Control de Acceso RFID</title>";
-  html += "<style>body{font-family: Arial, sans-serif; text-align:center; background-color:#f0f0f0;} .container{max-width: 400px; margin: auto; background: white; padding: 20px; border-radius: 10px;} h2{color: #333;} .user-card{background: #fafafa; padding: 10px; margin: 10px 0; border-radius: 8px;} .activo{color: green; font-weight: bold;} .inactivo{color: red; font-weight: bold;} a{display:inline-block; margin-top:5px; padding:5px 10px; background:#007BFF; color:white; border-radius:5px; text-decoration:none;} a:hover{background:#0056b3;}</style></head><body>";
-  html += "<div class='container'><h2>Control de acceso RFID</h2>";
+  String html = R"rawliteral(
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta name='viewport' content='width=device-width, initial-scale=1'>
+      <meta charset='UTF-8'>
+      <title>Control de Acceso RFID</title>
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+          text-align: center;
+          background-color: #f0f0f0;
+        }
+        .container {
+          max-width: 400px;
+          margin: auto;
+          background: white;
+          padding: 20px;
+          border-radius: 10px;
+        }
+        h2 {
+          color: #333;
+        }
+        .user-card {
+          background: #fafafa;
+          padding: 10px;
+          margin: 10px 0;
+          border-radius: 8px;
+        }
+        .activo {
+          color: green;
+          font-weight: bold;
+        }
+        .inactivo {
+          color: red;
+          font-weight: bold;
+        }
+        a {
+          display: inline-block;
+          margin-top: 5px;
+          padding: 5px 10px;
+          background: #007BFF;
+          color: white;
+          border-radius: 5px;
+          text-decoration: none;
+        }
+        a:hover {
+          background: #0056b3;
+        }
+      </style>
+    </head>
+    <body>
+      <div class='container'>
+        <h2>Control de acceso RFID</h2>
+  )rawliteral";
 
   for (int i = 0; i < 4; i++) {
     html += "<div class='user-card'>";
@@ -198,10 +316,17 @@ void handleRoot() {
     html += "</div>";
   }
 
-  html += "<a href='/abrir'>ABRIR MANUAL</a><br><a href='/logout'>Cerrar sesión</a>";
-  html += "</div></body></html>";
+  html += R"rawliteral(
+        <a href='/abrir'>ABRIR MANUAL</a><br>
+        <a href='/logout'>Cerrar sesión</a>
+      </div>
+    </body>
+    </html>
+  )rawliteral";
+
   server.send(200, "text/html", html);
 }
+
 
 void handleToggle() {
   if (!webLogeado) {
