@@ -7,7 +7,7 @@
 #include <ESP32Servo.h>
 #include <Keypad.h>
 
-// =================== CONFIGURACIÓN DE WIFI (AP) ===================
+// =================== CONFIGURACIÓN DE WIFI ===================
 const char* ssid = "ESP32_ACCESS";
 const char* password = "12345678";
 WebServer server(80);
@@ -66,8 +66,6 @@ struct UsuarioWeb {
 UsuarioWeb usuariosWeb[] = {
   { "admin", "admin123" },
   { "jose", "jose123" },
-  // Puedes agregar más aquí
-  // {"usuario2", "clave2"}
 };
 
 // =================== SESIÓN WEB ===================
@@ -76,6 +74,7 @@ bool webLogeado = false;
 // =================== FUNCIONES ===================
 void activarCerradura() {
   servo.write(OPEN_POS);
+  Serial.println("servo activo");
   digitalWrite(BUZZER_PIN, HIGH);
   delay(300);
   digitalWrite(BUZZER_PIN, LOW);
